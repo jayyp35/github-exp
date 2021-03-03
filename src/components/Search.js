@@ -16,7 +16,7 @@ class Search extends React.Component {
     render() {
         const {fetchData} = this.props;
         const {username} = this.state;
-        return(
+        return( 
             <div className="bg-dark">
                 <div className="container py-5">
                     <div className="row">

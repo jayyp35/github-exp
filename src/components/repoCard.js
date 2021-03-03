@@ -1,11 +1,11 @@
 import React from 'react'
 
-const RepoCard = ({key,repo}) => {
+const RepoCard = ({repo}) => {
     let link = `https://github.com/${repo.owner.login}/${repo.name}`
     return (
-        <div className="card">
+        <div className="card m-1 rounded">
             <div className="card-body">
-            <a href={link} target="_blank"><h3>{repo.name} </h3></a>
+            <a className="text-info" href={link} target="_blank" rel="noreferrer"><h3>{repo.name} </h3></a>
                 <p>{repo.description}</p>
                 <h4></h4>
             </div>
@@ -13,4 +13,4 @@ const RepoCard = ({key,repo}) => {
     )
 }
 
-export default RepoCard
+export default RepoCard 
