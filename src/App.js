@@ -14,6 +14,7 @@ class App extends React.Component {
     repos:null,
     totalrepos:0,
     reposshowing:0,
+    fetchedrepos:false,
     page:1,
   }
 
@@ -23,7 +24,8 @@ class App extends React.Component {
       loading:true,
       repos:null,
       totalrepos:0,
-      reposshowing:0
+      reposshowing:0,
+      fetchedrepos:false,
     })
     const res = fetch(`https://api.github.com/users/${username}`)
     res.then((response) => {
@@ -57,7 +59,8 @@ class App extends React.Component {
       this.setState({
         repos:data,
         page: page + 1,
-        reposshowing: data.length
+        reposshowing: data.length,
+        fetchedrepos:true,
       })
     }).catch((err) => {
       console.log(err);
@@ -65,23 +68,46 @@ class App extends React.Component {
   }
 
   loadmore = () => {
-    console.log("Loading more");
-    const {page,reposshowing} = this.state
-    fetch(`https://api.github.com/users/${this.state.username}/repos?page=${this.state.page}>`)
-    .then((response) => {
-      return response.json()
-    }).then((data) => {
-      const {repos} = this.state
-      const morerepos = [...repos,...data]
-      console.log(morerepos);
+    
+    const {page,fetchedrepos,reposshowing,totalrepos} = this.state
+    if(fetchedrepos && (reposshowing<totalrepos)) {
       this.setState({
-        repos:morerepos,
-        page: page+1,
-        reposshowing: morerepos.length
+        fetchedrepos:false
       })
-    })
+      console.log("Loading more");
+      fetch(`https://api.github.com/users/${this.state.username}/repos?page=${this.state.page}>`)
+      .then((response) => {
+        return response.json()
+      }).then((data) => {
+        const prevrepos = this.state.repos
+        const morerepos = [...prevrepos,...data]
+        console.log(morerepos);
+        this.setState({
+          repos:morerepos,
+          page: page+1,
+          reposshowing: morerepos.length,
+          fetchedrepos:true
+        })
+      })
+    }
   }
 
+  componentDidMount() {
+    window.addEventListener("scroll",this.handleScroll)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll",this.handleScroll)
+  }
+
+  handleScroll = () => {
+    const currentScroll = window.scrollY
+    const maxScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight
+    
+    if(maxScroll-currentScroll < 100) {
+      this.loadmore()
+    }
+  }
   render() {
     const {user,error,loading,repos,reposshowing,totalrepos} = this.state;
     return (
@@ -94,7 +120,7 @@ class App extends React.Component {
           </div>
           {!loading && !error && user && <User user={this.state.user} click={this.fetchUserRepsitories}/>}
           {!loading && repos && repos.map((repo,index) => <RepoCard key={index} repo={repo}/>)}
-          {reposshowing>0 && reposshowing<totalrepos && <button className="btn btn-success" onClick={() => this.loadmore()}> Load More </button>}
+          
         </div>
       </div> 
     )
