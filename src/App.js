@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Search from './components/Search'
 import User from './components/User'
+import RepoCard from './components/repoCard'
 
 class App extends React.Component {
 
@@ -56,16 +57,17 @@ class App extends React.Component {
 
 
   render() {
-    const {user,error,loading} = this.state;
+    const {user,error,loading,repos} = this.state;
     return (
       <div>
         <Search fetchData={this.fetchUserData}/>
         <div className="container">
           <div className="text-center pt-5">
-          {loading && <p>Loading...</p>}
-          <p className="text-danger">{error}</p>
+          {loading && <p><b>Loading...</b></p>}
+          <p className="text-danger"><b>{error}</b></p>
           </div>
-        {!loading && !error && user && <User user={this.state.user} click={this.fetchUserRepsitories}/>}
+          {!loading && !error && user && <User user={this.state.user} click={this.fetchUserRepsitories}/>}
+          {!loading && repos && repos.map((repo,index) => <RepoCard key={index} repo={repo}/>)}
         </div>
       </div> 
     )
