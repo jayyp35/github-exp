@@ -9,7 +9,8 @@ class App extends React.Component {
     user:null,
     error:null,
     loading:false,
-    username:null
+    username:null,
+    repos:null
   }
 
   fetchUserData = (username) => {
@@ -45,6 +46,9 @@ class App extends React.Component {
       return response.json()
     }).then((data)=> {
       console.log(data);
+      this.setState({
+        repos:data
+      })
     }).catch((err) => {
       console.log(err);
     })
@@ -55,10 +59,14 @@ class App extends React.Component {
     const {user,error,loading} = this.state;
     return (
       <div>
-      <Search fetchData={this.fetchUserData}/>
-      {loading && <p>Loading...</p>}
-      <p className="text-danger">{error}</p>
-      {!loading && !error && user && <User user={this.state.user} click={this.fetchUserRepsitories}/>}
+        <Search fetchData={this.fetchUserData}/>
+        <div className="container">
+          <div className="text-center pt-5">
+          {loading && <p>Loading...</p>}
+          <p className="text-danger">{error}</p>
+          </div>
+        {!loading && !error && user && <User user={this.state.user} click={this.fetchUserRepsitories}/>}
+        </div>
       </div> 
     )
   }
