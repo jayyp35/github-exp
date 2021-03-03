@@ -27,7 +27,7 @@ class Search extends React.Component {
                                 className="form-control" 
                                 value={username} 
                                 onChange={this.handleUsernameChange} 
-                                type="text name="username 
+                                type="text" name="username"
                                 placeholder="Enter Username"/>
                                 </div>
                                 <div className="col-3">
